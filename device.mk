@@ -254,6 +254,8 @@ PRODUCT_PACKAGES += \
     libwpa_client \
     hostapd_default.conf \
     hostapd \
+    wifilogd \
+    wificond \
     fstman.ini \
     wpa_supplicant \
     wpa_supplicant.conf \
