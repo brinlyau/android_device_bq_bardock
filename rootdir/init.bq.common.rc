@@ -1,0 +1,52 @@
+on boot
+    chown system system /sys/class/leds/red/blink
+    chown system system /sys/class/leds/blue/blink
+    chown system system /sys/class/leds/green/blink
+    #Vibrator intensity modifier
+    chown system system /sys/class/timed_output/vibrator/enable
+    chown system system /sys/class/timed_output/vibrator/wf_s0
+    chown system system /sys/class/timed_output/vibrator/wf_s1
+    chown system system /sys/class/timed_output/vibrator/wf_s2
+    chown system system /sys/class/timed_output/vibrator/wf_s3
+    chown system system /sys/class/timed_output/vibrator/wf_s4
+    chown system system /sys/class/timed_output/vibrator/wf_s5
+    chown system system /sys/class/timed_output/vibrator/wf_s6
+    chown system system /sys/class/timed_output/vibrator/wf_s7
+    chown system system /sys/class/timed_output/vibrator/wf_update_now
+
+    # Double Tap to Wake
+    chown root system /sys/android_touch/wakeup_gesture_enable
+    chmod 0660 /sys/android_touch/wakeup_gesture_enable
+
+on post-fs-data
+service sdlog /system/bin/sdlog
+    class main
+    user root
+    disabled
+    oneshot
+
+on property:persist.service.sdlog.enable=1
+    start sdlog
+
+on property:persist.service.sdlog.enable=0
+    stop sdlog
+
+service tpver /system/bin/sh /system/etc/init.bq.tp.sh
+    class late_start
+    user root
+    oneshot
+    seclabel u:r:tpver:s0
+
+on property:sys.boot_completed=1
+   #tp version
+   start tpver
+
+service nvtool /system/bin/nvtool
+    class main
+    user root
+    disable
+    oneshot
+    seclabel u:r:nvtool:s0
+
+on property:sys.sn_set=1
+   start nvtool
